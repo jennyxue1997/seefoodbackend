@@ -48,7 +48,7 @@ def post_nutrition_info():
     elif request.method == "DELETE":
          return jsonify(meal.delete_meal_info(request, client))
 
-@app.route("/getmeals", methods=["POST", "DELETE"])
+@app.route("/getmeals", methods=["POST"])
 def post_all_meals():
     """
     API for getting nutrition info of meal

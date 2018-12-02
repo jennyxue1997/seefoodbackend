@@ -9,7 +9,6 @@ CREDENTIALS = service_account.Credentials.from_service_account_file(
 PROJECT_ID = "seefood-224203"
 
 def get_user_info(request, client):
-    print(request.form)
     name = request.form["name"]
     gender = request.form["gender"]
     age = int(request.form["age"])
