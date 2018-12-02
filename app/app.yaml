@@ -1,3 +1,9 @@
 entrypoint: python app.py
 env: flex
 runtime: python
+resources:
+  memory_gb: 4
+
+handlers:
+- url: /.*
+  script: app.app

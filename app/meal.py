@@ -5,6 +5,7 @@ from google.cloud.automl_v1beta1.proto import service_pb2
 from werkzeug.utils import secure_filename
 import json
 from datetime import datetime, timedelta
+from dateutil import parser
 
 PROJECT_ID = "seefood-224203"
 MODEL_ID = "ICN1615678625233673805"
@@ -32,7 +33,7 @@ def post_meal_info(request, client):
     # timestamp = request.form["timestamp"]
     timestamp = datetime.now()
     nutrition = get_nutrition_info(demo_name, client)
-    nutrition["name"] = food_name
+    nutrition["name"] = " ".join(list(map(lambda x: x[0].upper() + x[1:].lower(), food_name.split("_"))))
     insert_meal(food_name, demo_name, user_name, timestamp, client)
     return nutrition
 
@@ -60,14 +61,6 @@ def delete_meal(food_name, user_name, timestamp, client):
     query_job = client.query(query)
     return query_job.result()
 
-def get_all_meals(user_name, timestamp, client):
-    #TODO Parse day
-    beginning_date = timestamp - timedelta(days=1)
-    end_date = timestamp + timedelta(days=1)
-    query = "SELECT * FROM `{}.seefood.Meals` WHERE (AND user_name='{}' AND timestamp < {} AND timestamp > {})".format(PROJECT_ID, user_name, end_date, beginning_date)
-    query_job = client.query(query)
-    return query_job.result()
-
 def upload_file(request):
     file = request.files['file'] 
     destination="/".join([UPLOAD_FOLDER, file.filename])
@@ -84,3 +77,14 @@ def get_prediction(image_path):
     params = {}
     request = prediction_client.predict(name, payload, params)
     return request 
+
+def get_all_meals(request, client):
+    timestamp = parser.parse(request.form["timestamp"])
+    print(timestamp)
+    user_name = request.form["user_name"]
+    beginning_date = timestamp - timedelta(days=1)
+    end_date = timestamp + timedelta(days=1)
+    query = "SELECT * FROM `{}.seefood.Meals` WHERE (AND user_name='{}' AND timestamp < {} AND timestamp > {})".format(PROJECT_ID, user_name, end_date, beginning_date)
+    print(query)
+    query_job = client.query(query)
+    return query_job.result()
