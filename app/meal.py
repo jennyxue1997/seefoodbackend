@@ -44,6 +44,7 @@ def get_nutrition_info(food_name, client):
     query_job = client.query(query)
     results = query_job.result().to_dataframe().to_dict("records")[0]
     return results
+    
 
 def insert_meal(food_name, demo_name, user_name, timestamp, client):
     query = "INSERT INTO `{}.seefood.Meals` (food_name, demo_name, user_name, timestamp) VALUES ('{}', '{}', '{}', '{}')".format(PROJECT_ID, food_name, demo_name, user_name, timestamp)
@@ -58,7 +59,8 @@ def delete_meal_info(request, client):
     return
 
 def delete_meal(food_name, user_name, timestamp, client):
-    query = "DELETE FROM `{}.seefood.Meals` WHERE (food_name='{}' AND user_name='{}' AND timestamp='{}')".format(PROJECT_ID, food_name, user_name, timestamp)
+    food_name = food_name.lower().replace(" ", "_")
+    query = "DELETE FROM `{}.seefood.Meals` WHERE (food_name='{}' AND user_name='{}')".format(PROJECT_ID, food_name, user_name)
     query_job = client.query(query)
     return query_job.result()
 
@@ -87,6 +89,12 @@ def get_all_meals(request, client):
     query = "SELECT * FROM `{}.seefood.Meals` WHERE (user_name='{}' AND timestamp < '{}' AND timestamp > '{}') ORDER BY timestamp DESC".format(PROJECT_ID, user_name, end_date, beginning_date)
     query_job = client.query(query)
     results = query_job.result().to_dataframe().to_dict("records")
+    if len(results) == 0:
+        ans = "protein,calcium,sodium,fiber,vitaminc,potassium,carbohydrate,sugars,fat,water,calories,saturated,monounsat,polyunsat".split(",")
+        d = {}
+        for i in ans:
+            d[i] = 0
+        return {"food": results, "nutrition": d}
     all_foods = []
     for result in results:
         all_foods.append(result["demo_name"])
@@ -109,6 +117,6 @@ def get_all_meals(request, client):
         nutrition_info = nutrition_results[nutrition_results["name"] == food].to_dict("records")[0]
         result.update(nutrition_info)
         current_sum = np.add(current_sum, nutrition_results[nutrition_results["name"] == food].values[0][2:-1])
-
+    current_sum *= 3
     df = pd.DataFrame([current_sum], columns=nutrition_results.columns[2:-1])
     return {"food": results, "nutrition": df.to_dict("records")}
