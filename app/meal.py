@@ -51,15 +51,14 @@ def insert_meal(food_name, demo_name, user_name, timestamp, client):
     return query_job.result()
 
 def delete_meal_info(request, client):
-    payload = json.loads(request.data)
-    food_name = payload["food_name"]
-    user_name = payload["name"]
-    timestamp = payload["timestamp"]
+    food_name = request.form["food_name"]
+    user_name = request.form["name"]
+    timestamp =  parser.parse(" ".join(request.form["timestamp"].split(" ")[:5]))
     delete_meal(food_name, user_name, timestamp, client)
     return
 
 def delete_meal(food_name, user_name, timestamp, client):
-    query = "DELETE FROM `{}.seefood.Meals` WHERE (food_name='{}', AND user_name='{}', AND timestamp='{}')".format(PROJECT_ID, food_name, user_name, timestamp)
+    query = "DELETE FROM `{}.seefood.Meals` WHERE (food_name='{}' AND user_name='{}' AND timestamp='{}')".format(PROJECT_ID, food_name, user_name, timestamp)
     query_job = client.query(query)
     return query_job.result()
 
