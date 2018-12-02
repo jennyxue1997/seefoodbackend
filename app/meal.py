@@ -8,33 +8,14 @@ from datetime import datetime, timedelta
 from dateutil import parser
 import numpy as np
 import pandas as pd
-import requests
-import os
 
 PROJECT_ID = "seefood-224203"
 MODEL_ID = "ICN1615678625233673805"
 UPLOAD_FOLDER = 'img'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
-app_id = "&app_id=" + os.environ["APP_ID_FOOD_DB"]
-app_key = "&app_key=" + os.environ["APP_KEY_FOOD_DB"]
-
 image_path = {
     "img/ramen.png": "ramen"
-}
-
-nutrients_conversion = {
-    "CA": "Calcium (mg)", 
-    "PROCNT": "Protein (g)",
-    "NA": "Sodium (mg)",
-    "FIBTG": "Fiber (g)",
-    "VITC": "Vitamin C (mg)",
-    "ENERC_KCAL": "Calories (kcal)",
-    "MG": "Potassium (mg)",
-    "CHOCDF": "Carbohydrate (g)",
-    "SUGAR": "Sugars (g)",
-    "FAT": "Total Fat (g)",
-    "FASAT": "Saturated Fat (g)"
 }
 
 demo = {
@@ -51,37 +32,17 @@ def post_meal_info(request, client):
     food_name = prediction.payload[0].display_name
     demo_name = demo[prediction.payload[0].display_name]
     user_name = request.form["name"]
-    timestamp = parser.parse(" ".join(request.form["timestamp"].split(" ")[:5]))
-
-    nutrition = get_nutrition_info(food_name)
+    # timestamp = request.form["timestamp"]
+    timestamp = datetime.now()
+    nutrition = get_nutrition_info(demo_name, client)
     nutrition["name"] = " ".join(list(map(lambda x: x[0].upper() + x[1:].lower(), food_name.split("_"))))
     insert_meal(food_name, demo_name, user_name, timestamp, client)
     return nutrition
 
-def get_nutrition_info(food_name):
-    url = "https://api.edamam.com/api/food-database/parser?ingr=" + food_name + app_id + app_key
-    recipe_data = json.loads(requests.get(url).text)["hints"][0]
-    food_uri = recipe_data["food"]["uri"]
-    measure_uri = recipe_data["measures"][0]["uri"]
-    
-    nutrients_url= "https://api.edamam.com/api/food-database/nutrients?" + app_id + app_key
-    data = {
-        "ingredients": [
-		{
-			"quantity": 1,
-			"measureURI": measure_uri,
-			"foodURI": food_uri
-		}
-	]
-    }
-
-    nutrients_data = json.loads(requests.post(nutrients_url, json=data).text)["totalNutrients"]
-    results = {}
-    for key in nutrients_conversion.keys():
-        if key in nutrients_data:
-            results[nutrients_conversion[key]] = nutrients_data[key]["quantity"]
-        else:
-            results[nutrients_conversion[key]] = 0
+def get_nutrition_info(food_name, client):
+    query = "SELECT * FROM `{}.seefood.Nutrition` WHERE name='{}'".format(PROJECT_ID, food_name)
+    query_job = client.query(query)
+    results = query_job.result().to_dataframe().to_dict("records")[0]
     return results
 
 def insert_meal(food_name, demo_name, user_name, timestamp, client):
@@ -121,22 +82,12 @@ def get_prediction(image_path):
 
 def get_all_meals(request, client):
     timestamp = parser.parse(" ".join(request.form["timestamp"].split(" ")[:5]))
-    print(timestamp)
     user_name = request.form["user_name"]
     beginning_date = timestamp - timedelta(days=1)
     end_date = timestamp + timedelta(days=1)
     query = "SELECT * FROM `{}.seefood.Meals` WHERE (user_name='{}' AND timestamp < '{}' AND timestamp > '{}') ORDER BY timestamp DESC".format(PROJECT_ID, user_name, end_date, beginning_date)
     query_job = client.query(query)
     results = query_job.result().to_dataframe().to_dict("records")
-    print(results)
-    
-    if len(results) == 0:
-        nutritions = "protein,calcium,sodium,fiber,vitaminc,potassium,carbohydrate,sugars,fat,water,calories,saturated,monounsat,polyunsat".split(",")
-        nutrition_map = {}
-        for i in nutritions:
-            nutrition_map[i] = 0
-        return {"food": [], "nutrition": nutrition_map}
-
     all_foods = []
     for result in results:
         all_foods.append(result["demo_name"])
@@ -161,7 +112,4 @@ def get_all_meals(request, client):
         current_sum = np.add(current_sum, nutrition_results[nutrition_results["name"] == food].values[0][2:-1])
 
     df = pd.DataFrame([current_sum], columns=nutrition_results.columns[2:-1])
-    print(results)
     return {"food": results, "nutrition": df.to_dict("records")}
-
-get_nutrition_info("steak")
