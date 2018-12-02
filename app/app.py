@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 from google.oauth2 import service_account
 from google.cloud import bigquery
@@ -48,6 +48,23 @@ def post_nutrition_info():
     elif request.method == "DELETE":
          return jsonify(meal.delete_meal_info(request, client))
 
+@app.route("/getmeals", methods=["POST", "DELETE"])
+def post_all_meals():
+    """
+    API for getting nutrition info of meal
+    
+    Requests
+        -----
+        food_name
+        name
+        timestamp
+ 
+    Returns
+        -----
+        Nutritional Facts
+    """
+    return jsonify(meal.get_all_meals(request, client))
+    
 @app.route("/recommend", methods=["POST"])
 def post_recommend_info():
     """
@@ -70,4 +87,4 @@ if __name__ == "__main__":
     "SeeFood_Credentials.json")
     PROJECT_ID = "seefood-224203"
     client = bigquery.Client(credentials=CREDENTIALS, project=PROJECT_ID)
-    app.run()
+    app.run(port="8080")

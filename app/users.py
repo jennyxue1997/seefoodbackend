@@ -20,7 +20,7 @@ def get_user_info(request, client):
     query = "SELECT * FROM `{}.seefood.Users` WHERE name='{}'".format(PROJECT_ID, name)
     query_job = client.query(query)
     results = query_job.result().to_dataframe().to_dict("records")
-    print(results)
+
     if len(results) == 0:
         query = "INSERT INTO `{}.seefood.Users` (name, gender, age, calories, activity_level) VALUES ('{}', '{}', {}, {}, '{}')".format(PROJECT_ID, name, gender, age, calories, activity_level)
         query_job = client.query(query)
