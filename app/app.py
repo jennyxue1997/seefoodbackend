@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 from google.oauth2 import service_account
 from google.cloud import bigquery
@@ -49,7 +49,7 @@ def post_nutrition_info():
          return jsonify(meal.delete_meal_info(request, client))
 
 @app.route("/getmeals", methods=["POST", "DELETE"])
-def post_nutrition_info():
+def post_all_meals():
     """
     API for getting nutrition info of meal
     

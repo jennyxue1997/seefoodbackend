@@ -1,0 +1,79 @@
+ * Serving Flask app "app" (lazy loading)
+ * Environment: production
+   WARNING: Do not use the development server in a production environment.
+   Use a production WSGI server instead.
+ * Debug mode: off
+Traceback (most recent call last):
+  File "app.py", line 90, in <module>
+    app.run(port="8080")
+  File "/home/jennyxue97/seefoodbackend/app/env/lib/python3.5/site-packages/flask/app.py", line 943, in run
+    run_simple(host, port, self, **options)
+  File "/home/jennyxue97/seefoodbackend/app/env/lib/python3.5/site-packages/werkzeug/serving.py", line 814, in run_simple
+    inner()
+  File "/home/jennyxue97/seefoodbackend/app/env/lib/python3.5/site-packages/werkzeug/serving.py", line 774, in inner
+    fd=fd)
+  File "/home/jennyxue97/seefoodbackend/app/env/lib/python3.5/site-packages/werkzeug/serving.py", line 660, in make_server
+    passthrough_errors, ssl_context, fd=fd)
+  File "/home/jennyxue97/seefoodbackend/app/env/lib/python3.5/site-packages/werkzeug/serving.py", line 577, in __init__
+    self.address_family), handler)
+  File "/usr/lib/python3.5/socketserver.py", line 440, in __init__
+    self.server_bind()
+  File "/usr/lib/python3.5/http/server.py", line 138, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib/python3.5/socketserver.py", line 454, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+ * Serving Flask app "app" (lazy loading)
+ * Environment: production
+   WARNING: Do not use the development server in a production environment.
+   Use a production WSGI server instead.
+ * Debug mode: off
+Traceback (most recent call last):
+  File "app.py", line 90, in <module>
+    app.run(port="8080")
+  File "/home/jennyxue97/seefoodbackend/app/env/lib/python3.5/site-packages/flask/app.py", line 943, in run
+    run_simple(host, port, self, **options)
+  File "/home/jennyxue97/seefoodbackend/app/env/lib/python3.5/site-packages/werkzeug/serving.py", line 814, in run_simple
+    inner()
+  File "/home/jennyxue97/seefoodbackend/app/env/lib/python3.5/site-packages/werkzeug/serving.py", line 774, in inner
+    fd=fd)
+  File "/home/jennyxue97/seefoodbackend/app/env/lib/python3.5/site-packages/werkzeug/serving.py", line 660, in make_server
+    passthrough_errors, ssl_context, fd=fd)
+  File "/home/jennyxue97/seefoodbackend/app/env/lib/python3.5/site-packages/werkzeug/serving.py", line 577, in __init__
+    self.address_family), handler)
+  File "/usr/lib/python3.5/socketserver.py", line 440, in __init__
+    self.server_bind()
+  File "/usr/lib/python3.5/http/server.py", line 138, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib/python3.5/socketserver.py", line 454, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+ * Serving Flask app "app" (lazy loading)
+ * Environment: production
+   WARNING: Do not use the development server in a production environment.
+   Use a production WSGI server instead.
+ * Debug mode: off
+Traceback (most recent call last):
+  File "app.py", line 90, in <module>
+    app.run(port="8080")
+  File "/home/jennyxue97/seefoodbackend/app/env/lib/python3.5/site-packages/flask/app.py", line 943, in run
+    run_simple(host, port, self, **options)
+  File "/home/jennyxue97/seefoodbackend/app/env/lib/python3.5/site-packages/werkzeug/serving.py", line 814, in run_simple
+    inner()
+  File "/home/jennyxue97/seefoodbackend/app/env/lib/python3.5/site-packages/werkzeug/serving.py", line 774, in inner
+    fd=fd)
+  File "/home/jennyxue97/seefoodbackend/app/env/lib/python3.5/site-packages/werkzeug/serving.py", line 660, in make_server
+    passthrough_errors, ssl_context, fd=fd)
+  File "/home/jennyxue97/seefoodbackend/app/env/lib/python3.5/site-packages/werkzeug/serving.py", line 577, in __init__
+    self.address_family), handler)
+  File "/usr/lib/python3.5/socketserver.py", line 440, in __init__
+    self.server_bind()
+  File "/usr/lib/python3.5/http/server.py", line 138, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/usr/lib/python3.5/socketserver.py", line 454, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use
+Pseudo-terminal will not be allocated because stdin is not a terminal.
+Hi there
+[32mForwarding HTTP traffic from https://seorsum.serveo.net
+[0m

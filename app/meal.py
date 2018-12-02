@@ -79,12 +79,16 @@ def get_prediction(image_path):
     return request 
 
 def get_all_meals(request, client):
-    timestamp = parser.parse(request.form["timestamp"])
-    print(timestamp)
+    timestamp = parser.parse(" ".join(request.form["timestamp"].split(" ")[:5]))
     user_name = request.form["user_name"]
     beginning_date = timestamp - timedelta(days=1)
     end_date = timestamp + timedelta(days=1)
-    query = "SELECT * FROM `{}.seefood.Meals` WHERE (AND user_name='{}' AND timestamp < {} AND timestamp > {})".format(PROJECT_ID, user_name, end_date, beginning_date)
-    print(query)
+    query = "SELECT * FROM `{}.seefood.Meals` WHERE (user_name='{}' AND timestamp < '{}' AND timestamp > '{}')".format(PROJECT_ID, user_name, end_date, beginning_date)
     query_job = client.query(query)
-    return query_job.result()
+    results = query_job.result().to_dataframe().to_dict("records")
+    for result in results:
+        if "_" in result["food_name"]:
+            result["food_name"] = " ".join(list(map(lambda x: x[0].upper() + x[1:].lower(), result["food_name"].split("_"))))
+        else:
+            result["food_name"] = result["food_name"][0].upper() + result["food_name"][1:].lower()
+    return results
